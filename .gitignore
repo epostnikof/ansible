@@ -1,0 +1,5 @@
+hosts
+common/files/*.pub
+/playbooks/*
+!/playbooks/add_user.yml
+/common/files/*
