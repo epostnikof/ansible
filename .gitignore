@@ -1,2 +1,5 @@
 hosts
 common/files/*.pub
+playbooks/*
+playbooks/!zabbix_a.yml
+playbooks/!redis.yml
