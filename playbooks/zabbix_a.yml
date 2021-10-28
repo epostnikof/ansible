@@ -1,11 +1,11 @@
 ---
 
 - name: Install default zabbix-agent
-  hosts: ubuntu.my 
+  hosts: srv1
   become: yes
 
   vars:
-          source_file_ubuntu: /etc/ansible/common/files/zabbix/agent/ubuntu/zabbix_agentd.conf
+          source_file_ubuntu: /etc/ansible/common/files/zabbix/agent/ubuntu/srv1.conf
           dest_file: /etc/zabbix/zabbix_agentd.conf
 
   tasks:
@@ -19,27 +19,51 @@
           - name: State Zabbix and Enable it on the every boot
             service: name=zabbix-agent state=started enabled=yes
 
-  handlers: 
-          - name: Restart agent
-            service: name=zabbix-agent state=restarted
+            #  handlers:
+            #- name: Restart agent
+            # service: name=zabbix-agent state=restarted
+
 
 - name: Install default zabbix-agent
-  hosts: centos
+  hosts: srv2 
   become: yes
+
   vars:
-          source_file_centos: /etc/ansible/common/files/zabbix/agent/centos/zabbix_agentd.conf
+          source_file_ubuntu: /etc/ansible/common/files/zabbix/agent/ubuntu/srv2.conf
           dest_file: /etc/zabbix/zabbix_agentd.conf
 
   tasks:
-          - name: Install zabbix-agent on CentOS servers
-            yum: name=zabbix-agent state=latest
+          - name: Install zabbix-agent on ubuntu servers
+            apt: name=zabbix-agent state=latest
+
+          - name: Copy config file for ubuntu.my
+            copy: src={{ source_file_ubuntu }} dest={{ dest_file }} mode=0644
+            notify: Restart agent
+
+          - name: State Zabbix and Enable it on the every boot
+            service: name=zabbix-agent state=started enabled=yes
+
+            #  handlers: 
+            #- name: Restart agent
+            #service: name=zabbix-agent state=restarted
+
+- name: Install default zabbix-agent
+  hosts: srv3
+  become: yes
+  vars:
+          source_file_ubuntu: /etc/ansible/common/files/zabbix/agent/ubuntu/srv3.conf
+          dest_file: /etc/zabbix/zabbix_agentd.conf
+
+  tasks:
+          - name: Install zabbix-agent on srv3 servers
+            apt: name=zabbix-agent state=latest
             
           - name: Copy config file for centos
-            copy: src={{ source_file_centos }} dest={{ dest_file }} mode=0644
-            notify: Restart agent
+            copy: src={{ source_file_ubuntu }} dest={{ dest_file }} mode=0644
+            #            notify: Restart agent
             
           - name: State Zabbix and Enable it on the every boot
             service: name=zabbix-agent state=started enabled=yes
-  handlers:
-          - name: Restart agent
-            service: name=zabbix-agent state=restarted
+            #  handlers:
+            #- name: Restart agent
+            # service: name=zabbix-agent state=restarted

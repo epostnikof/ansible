@@ -1,0 +1,13 @@
+---
+
+- name: Install pg_12 in Ubuntu 20.04
+  hosts: db
+  become: yes
+
+  tasks:
+        - name: Install packedges 
+          apt: name=postgresql state=latest
+          apt: name=postgresql-contrib state=latest
+
+        - name: State Postges and Enable it on the every boot
+          service: name=postgresql.service state=started enabled=yes

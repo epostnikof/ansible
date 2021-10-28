@@ -1,0 +1,24 @@
+---
+
+- name: Install default zabbix-server
+  hosts: srv1
+  become: yes
+
+  tasks:
+          - name: Install zabbix-server on ubuntu servers
+            apt: name=zabbix-server-pgsql state=latest
+
+          - name: State Zabbix and Enable it on the every boot
+            service: name=zabbix-server state=started enabled=yes
+
+- name: Installation of auxiliary components for Zabbix
+  hosts: srv1
+  become: yes
+
+  tasks:
+          - name: begin
+            apt: name=zabbix-frontend-php state=latest
+            apt: name=php7.4-pgsql state=latest
+            apt: name=zabbix-apache-conf state=latest
+            apt: name=zabbix-sql-scripts state=latest
+
